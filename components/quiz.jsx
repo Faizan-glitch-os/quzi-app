@@ -1,7 +1,8 @@
-import { act, useState } from "react";
+import { useCallback, useState } from "react";
 import quizCompleteImg from "../src/assets/quiz-complete.png";
 
 import QUESTION from "../src/questions";
+import ProgressBar from "./progress_bar";
 
 export default function Quiz() {
   const [selectedAnswer, setSelectedAnswer] = useState([]);
@@ -21,14 +22,26 @@ export default function Quiz() {
   const shuffledAnswers = QUESTION[activeQuestionIndex].answers;
   shuffledAnswers.sort(() => Math.random() - 0.5);
 
-  function handleSelectedAnswer(selectedAnswer) {
+  const handleSelectedAnswer = useCallback(function handleSelectedAnswer(
+    selectedAnswer
+  ) {
     setSelectedAnswer((previousAnswers) => {
       return [...previousAnswers, selectedAnswer];
     });
-  }
+  },
+  []);
+
+  const handleSkipAnswer = useCallback(
+    () => handleSelectedAnswer(null),
+    [handleSelectedAnswer]
+  );
 
   return (
     <div id="quiz">
+      <ProgressBar
+        timeout={10000}
+        onTimeout={() => handleSelectedAnswer(null)}
+      />
       <div id="questions">
         <h2>{QUESTION[activeQuestionIndex].text}</h2>
         <ul id="answers">
