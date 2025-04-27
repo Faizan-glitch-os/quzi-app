@@ -14,6 +14,15 @@ export default function Question({
     isCorrect: null,
   });
 
+  let timer = 10000;
+
+  if (answer.selectedAnswer) {
+    timer = 1000;
+  }
+  if (answer.isCorrect !== null) {
+    timer = 2000;
+  }
+
   function handleSelectedAnswer(answer) {
     setAnswer({ selectedAnswer: answer, isCorrect: null });
 
@@ -41,8 +50,13 @@ export default function Question({
   }
 
   return (
-    <div id="questions">
-      <ProgressBar timeout={10000} onTimeout={onSkipAnswer} />
+    <div id="question">
+      <ProgressBar
+        key={timer}
+        timeout={timer}
+        onTimeout={answer.selectedAnswer === "" ? onSkipAnswer : null}
+        mode={selectedState}
+      />
       <h2>{QUESTIONS[currentQuestionIndex].text}</h2>
       <Answer
         answers={QUESTIONS[currentQuestionIndex].answers}
