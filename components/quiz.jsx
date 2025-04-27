@@ -3,6 +3,7 @@ import quizCompleteImg from "../src/assets/quiz-complete.png";
 
 import QUESTION from "../src/questions";
 import Question from "./question";
+import Result from "./result";
 
 export default function Quiz() {
   const [selectedAnswer, setSelectedAnswer] = useState([]);
@@ -25,10 +26,7 @@ export default function Quiz() {
   );
 
   return quizComplete ? (
-    <div id="summary">
-      <img src={quizCompleteImg} alt="trophy image" />
-      <h2>quiz completed</h2>
-    </div>
+    <Result answersList={selectedAnswer} />
   ) : (
     <div id="quiz">
       <Question
