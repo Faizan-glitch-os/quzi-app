@@ -2,8 +2,7 @@ import { useCallback, useState } from "react";
 import quizCompleteImg from "../src/assets/quiz-complete.png";
 
 import QUESTION from "../src/questions";
-import ProgressBar from "./progress_bar";
-import Answer from "./answer";
+import Question from "./question";
 
 export default function Quiz() {
   const [selectedAnswer, setSelectedAnswer] = useState([]);
@@ -52,20 +51,15 @@ export default function Quiz() {
 
   return (
     <div id="quiz">
-      <ProgressBar
+      <Question
         key={activeQuestionIndex}
-        timeout={10000}
-        onTimeout={handleSkipAnswer}
+        onSkipAnswer={handleSkipAnswer}
+        questions={QUESTION[activeQuestionIndex].text}
+        answers={QUESTION[activeQuestionIndex].answers}
+        answerSelected={selectedAnswer[selectedAnswer.length - 1]}
+        selected={selectedState}
+        onSelectAnswer={handleSelectedAnswer}
       />
-      <div id="questions">
-        <h2>{QUESTION[activeQuestionIndex].text}</h2>
-        <Answer
-          answers={QUESTION[activeQuestionIndex].answers}
-          answerSelected={selectedAnswer[activeQuestionIndex] - 1}
-          selected={selectedState}
-          onSelectAnswer={handleSelectedAnswer}
-        />
-      </div>
     </div>
   );
 }
