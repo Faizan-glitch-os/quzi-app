@@ -1,23 +1,54 @@
+import { useState } from "react";
+import QUESTIONS from "../src/questions";
+
 import Answer from "./answer";
 import ProgressBar from "./progress_bar";
 
 export default function Question({
   onSkipAnswer,
-  questions,
-  answers,
-  answerSelected,
-  selected,
+  currentQuestionIndex,
   onSelectAnswer,
 }) {
+  const [answer, setAnswer] = useState({
+    selectedAnswer: "",
+    isCorrect: null,
+  });
+
+  function handleSelectedAnswer(answer) {
+    setAnswer({ selectedAnswer: answer, isCorrect: null });
+
+    setTimeout(() => {
+      setAnswer(
+        {
+          selectedAnswer: answer,
+          isCorrect: answer === QUESTIONS[currentQuestionIndex].answers[0],
+        },
+        1000
+      );
+
+      setTimeout(() => {
+        onSelectAnswer(answer);
+      }, 2000);
+    });
+  }
+
+  let selectedState = "";
+
+  if (answer.selectedAnswer && answer.isCorrect) {
+    selectedState = answer.isCorrect ? "correct" : "wrong";
+  } else if (answer.selectedAnswer) {
+    selectedState = "answered";
+  }
+
   return (
     <div id="questions">
       <ProgressBar timeout={10000} onTimeout={onSkipAnswer} />
-      <h2>{questions}</h2>
+      <h2>{QUESTIONS[currentQuestionIndex].text}</h2>
       <Answer
-        answers={answers}
-        answerSelected={answerSelected}
-        selected={selected}
-        onSelectAnswer={onSelectAnswer}
+        answers={QUESTIONS[currentQuestionIndex].answers}
+        answerSelected={answer.selectedAnswer}
+        selected={selectedState}
+        onSelectAnswer={handleSelectedAnswer}
       />
     </div>
   );
