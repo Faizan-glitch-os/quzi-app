@@ -3,13 +3,14 @@ import quizCompleteImg from "../src/assets/quiz-complete.png";
 
 import QUESTION from "../src/questions";
 import ProgressBar from "./progress_bar";
+import Answer from "./answer";
 
 export default function Quiz() {
   const [selectedAnswer, setSelectedAnswer] = useState([]);
-  const [selected, setSelected] = useState("");
+  const [selectedState, setSelectedState] = useState("");
 
   const activeQuestionIndex =
-    selected === "" ? selectedAnswer.length : selectedAnswer.length - 1;
+    selectedState === "" ? selectedAnswer.length : selectedAnswer.length - 1;
   const quizComplete = selectedAnswer.length === QUESTION.length;
 
   if (quizComplete) {
@@ -21,12 +22,9 @@ export default function Quiz() {
     );
   }
 
-  const shuffledAnswers = QUESTION[activeQuestionIndex].answers;
-  shuffledAnswers.sort(() => Math.random() - 0.5);
-
   const handleSelectedAnswer = useCallback(
     function handleSelectedAnswer(selectedAnswer) {
-      setSelected("answered");
+      setSelectedState("answered");
 
       setSelectedAnswer((previousAnswers) => {
         return [...previousAnswers, selectedAnswer];
@@ -34,13 +32,13 @@ export default function Quiz() {
 
       setTimeout(() => {
         if (selectedAnswer === QUESTION[activeQuestionIndex].answers[0]) {
-          setSelected("correct");
+          setSelectedState("correct");
         } else {
-          setSelected("wrong");
+          setSelectedState("wrong");
         }
 
         setTimeout(() => {
-          setSelected("");
+          setSelectedState("");
         }, 2000);
       }, 1000);
     },
@@ -61,34 +59,12 @@ export default function Quiz() {
       />
       <div id="questions">
         <h2>{QUESTION[activeQuestionIndex].text}</h2>
-        <ul id="answers">
-          {shuffledAnswers.map((answer) => {
-            const cssClass = "";
-            const isSelected =
-              answer === selectedAnswer[selectedAnswer.length - 1];
-
-            if (selected === "answered" && isSelected) {
-              cssClass = "selected";
-            }
-
-            if (
-              (selected === "correct" || selected === "wrong") &&
-              isSelected
-            ) {
-              cssClass = selected;
-            }
-            return (
-              <li key={answer} className="answer">
-                <button
-                  onClick={() => handleSelectedAnswer(answer)}
-                  className={cssClass}
-                >
-                  {answer}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        <Answer
+          answers={QUESTION[activeQuestionIndex].answers}
+          answerSelected={selectedAnswer[activeQuestionIndex] - 1}
+          selected={selectedState}
+          onSelectAnswer={handleSelectedAnswer}
+        />
       </div>
     </div>
   );
