@@ -39,8 +39,9 @@ export default function Quiz() {
   return (
     <div id="quiz">
       <ProgressBar
+        key={activeQuestionIndex}
         timeout={10000}
-        onTimeout={() => handleSelectedAnswer(null)}
+        onTimeout={handleSkipAnswer}
       />
       <div id="questions">
         <h2>{QUESTION[activeQuestionIndex].text}</h2>
